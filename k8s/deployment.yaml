@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homeassistant
+  namespace: homeassistant
+  labels:
+    app.kubernetes.io/name: homeassistant
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: homeassistant
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: homeassistant
+    spec:
+      initContainers:
+      - name: init-config
+        image: busybox:latest
+        command:
+        - sh
+        - -c
+        - |
+          if [ ! -f /config/configuration.yaml ]; then
+            cp /init-config/configuration.yaml /config/configuration.yaml
+          fi
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: init-config
+          mountPath: /init-config
+      containers:
+      - name: homeassistant
+        image: ghcr.io/home-assistant/home-assistant:stable
+        env:
+        - name: TZ
+          value: "Asia/Jakarta"
+        ports:
+        - name: http
+          containerPort: 8123
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 1000m
+            memory: 1024Mi
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8123
+          initialDelaySeconds: 45
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8123
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        volumeMounts:
+        - name: config
+          mountPath: /config
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: homeassistant-config-pvc
+      - name: init-config
+        configMap:
+          name: homeassistant-init-config
