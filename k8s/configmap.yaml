@@ -13,6 +13,10 @@ data:
         - 10.42.0.0/16       # K3s Pod CIDR
         - 192.168.50.0/24    # Homelab LAN CIDR
         - 127.0.0.1
+
+    prometheus:
+      namespace: homeassistant
+      requires_auth: false
   http: |
     {
       "version": 2,
