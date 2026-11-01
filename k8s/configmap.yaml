@@ -13,3 +13,31 @@ data:
         - 10.42.0.0/16       # K3s Pod CIDR
         - 192.168.50.0/24    # Homelab LAN CIDR
         - 127.0.0.1
+  http: |
+    {
+      "version": 2,
+      "minor_version": 2,
+      "key": "http",
+      "data": {
+        "stable": {
+          "server_port": 8123,
+          "use_x_forwarded_for": true,
+          "trusted_proxies": [
+            "10.42.0.0/16",
+            "192.168.50.0/24",
+            "127.0.0.1/32"
+          ],
+          "cors_allowed_origins": [
+            "https://cast.home-assistant.io"
+          ],
+          "login_attempts_threshold": -1,
+          "ip_ban_enabled": true,
+          "ssl_profile": "modern",
+          "use_x_frame_options": true,
+          "error": null,
+          "error_message": null
+        },
+        "pending": null,
+        "yaml_migration_done": true
+      }
+    }

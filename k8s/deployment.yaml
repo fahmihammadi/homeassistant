@@ -27,6 +27,10 @@ spec:
           if [ ! -f /config/configuration.yaml ]; then
             cp /init-config/configuration.yaml /config/configuration.yaml
           fi
+          mkdir -p /config/.storage
+          if [ ! -f /config/.storage/http ]; then
+            cp /init-config/http /config/.storage/http
+          fi
         volumeMounts:
         - name: config
           mountPath: /config
