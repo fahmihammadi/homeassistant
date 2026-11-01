@@ -17,6 +17,15 @@ data:
     prometheus:
       namespace: homeassistant
       requires_auth: false
+
+    automation: !include automations.yaml
+
+    rest_command:
+      telegram_alert:
+        url: "https://api.telegram.org/bot8796278723:AAF_WuVv5IA3zS-0FddckBjImDzqGs69_SQ/sendMessage"
+        method: "POST"
+        payload: '{"chat_id": "-5429576887", "text": "{{ message }}", "parse_mode": "HTML"}'
+        content_type: "application/json"
   http: |
     {
       "version": 2,
